@@ -1,23 +1,19 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Home'])
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="tab-pane" role="tabpanel">
+    <div class="card-group">
+        @if ($loggedInUser->isAdmin())
             <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
+                    <div class="text-medium-emphasis text-end mb-4">
+                        <i class="icon icon-xxl cil-group"></i>
+                    </div>
+                    <div class="fs-4 fw-semibold">{{ $users_count }}</div>
+                    <small class="text-medium-emphasis text-uppercase fw-semibold">Users</small>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 @endsection
