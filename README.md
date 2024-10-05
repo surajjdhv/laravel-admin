@@ -12,7 +12,7 @@
 
 Laravel Admin is a minimal starter template for Laravel, focused solely on Blade templating, with built-in authentication. This template is designed to give you a clean, uncluttered base to start your project, without incorporating additional frameworks like Livewire or any frontend framework—just plain old Blade.
 
-## Features
+## Demo
 
 Demo link will be added soon.
 
