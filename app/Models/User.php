@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->type == User::TYPE_ADMIN;
     }
+
+    public function requiresPasswordChange() : bool
+    {
+        return $this->password_change_required;
+    }
 }

@@ -14,14 +14,26 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('type')->default('standard')->after('remember_token');
+            $table->string('type')
+                ->default('standard')
+                ->after('remember_token');
+
             $table->unsignedBigInteger('created_by')
                 ->nullable()
                 ->after('type');
+
             $table->unsignedBigInteger('updated_by')
                 ->nullable()
                 ->after('created_by');
-            $table->boolean('is_active')->default(true)->after('type');
+
+            $table->boolean('is_active')
+                ->default(true)
+                ->after('type');
+                
+            $table->boolean('password_change_required')
+                ->default(false)
+                ->after('is_active');
+
             $table->softDeletes()->after('updated_at');
 
             $table->foreign('created_by')
@@ -45,6 +57,7 @@ return new class extends Migration
             $table->dropColumn([
                 'type',
                 'is_active',
+                'password_change_required',
                 'created_by',
                 'updated_by',
                 'deleted_at'

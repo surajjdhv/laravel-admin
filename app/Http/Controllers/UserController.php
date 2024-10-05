@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Mail\SendPasswordMail;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -41,8 +43,12 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         if ($request->has('send-password')) {
-            $password = Str::random(6);
-            $request->merge(['password' => $password]);
+            $password = Str::password(8, true, true, false);
+            
+            $request->merge([
+                'password' => $password,
+                'password_reset_required' => true
+            ]);
         }
 
         $user = User::create([
@@ -57,6 +63,7 @@ class UserController extends Controller
 
         if ($request->has('send-password')) {
             // Send email to the user with password
+            Mail::to($request->get('email'))->send(new SendPasswordMail(...$request->only(['name', 'password'])));
         }
 
         return redirect()->route('users.show', $user->id)

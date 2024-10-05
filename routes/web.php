@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,6 +12,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
+    Route::get('password/change', [ChangePasswordController::class, 'showChangeForm'])->name('password.change');
+    Route::post('password/change', [ChangePasswordController::class, 'change'])->name('password.store');
+
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::group([

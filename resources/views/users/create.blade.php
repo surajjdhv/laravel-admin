@@ -60,7 +60,10 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="1" name="send-password" id="sendPasswordCheck" @if(old('send-password') == 1) checked @endif>
                             <label class="form-check-label" for="sendPasswordCheck">
-                                Generate & send password on email
+                                Send a temporary password
+                                &nbsp;
+                                <i class="icon cil-info" data-coreui-toggle="tooltip" data-coreui-title="
+The user will receive an email with a temporary password for initial login, and will be prompted to change it upon their first login."></i>
                             </label>
                         </div>
                         <div class="form-group @if(old('send-password') == 1) d-none @endif" id="passwordFormGroup">
