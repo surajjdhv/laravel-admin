@@ -10,7 +10,6 @@
                 <div class="card-body">
                     <div class="alert alert-info" role="alert">
                         Please change your password to continue. This is required for first-time login.
-                        {{ Debugbar::info($errors->all()); }}
                     </div>
 
                     <form method="POST" action="{{ route('password.store') }}">
