@@ -30,7 +30,7 @@
                 <tr>
                     <th>Type</th>
                     <td>
-                        <select class="form-control" name="type" required>
+                        <select class="form-control select2" name="type" required>
                             @foreach ($userTypes as $type)
                                 <option value="{{ $type }}" @if(old('type', 'sales') == $type) selected @endif>{{ ucwords($type) }}</option>
                             @endforeach

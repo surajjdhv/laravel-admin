@@ -28,7 +28,7 @@ We welcome contributions to enhance Laravel Admin! A detailed contributing guide
 
 ## Security
 
-If you discover any security vulnerabilities, please report them to [Suraj Jadhav](mailto:dev@surajjadhav.anonaddy.me). All issues will be promptly addressed.
+If you discover any security vulnerabilities, please report them to [dev@surajjadhav.anonaddy.me](mailto:dev@surajjadhav.anonaddy.me). All issues will be promptly addressed.
 
 ## License
 
