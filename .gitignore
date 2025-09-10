@@ -20,3 +20,7 @@ yarn-error.log
 /.vscode
 /.zed
 _ide_helper.php
+laravel-admin.code-workspace
+docker-compose.override.yml
+/.vscode-server
+/docker
