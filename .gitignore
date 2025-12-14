@@ -24,3 +24,5 @@ laravel-admin.code-workspace
 docker-compose.override.yml
 /.vscode-server
 /docker
+/.cursor-server
+/.cache

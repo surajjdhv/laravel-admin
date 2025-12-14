@@ -15,11 +15,33 @@
 			</a>
 		</li>
 		@if($loggedInUser->isAdmin())
-			<li class="nav-item">
+			<!-- <li class="nav-item">
 				<a class="nav-link" href="{{ route('users.index') }}">
 					<i class="nav-icon cil-group"></i>
 					Users
 				</a>
+			</li> -->
+			<li class="nav-item nav-group show">
+				<a class="nav-link nav-group-toggle" href="#">
+					<i class="nav-icon cil-group"></i> User Management
+				</a>
+				<ul class="nav-group-items">
+					<li class="nav-item">
+						<a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+							Users
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+							Roles
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">
+							Permissions
+						</a>
+					</li>
+				</ul>
 			</li>
 		@endif
 	</ul>
