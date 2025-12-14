@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
             Route::get('edit', 'edit')->name('edit');
             Route::post('update', 'update')->name('update');
             Route::post('delete', 'delete')->name('delete');
+            Route::post('permissions/attach', 'attachPermission')->name('permissions.attach');
+            Route::post('permissions/{permission}/detach', 'detachPermission')->name('permissions.detach');
         });
     });
 

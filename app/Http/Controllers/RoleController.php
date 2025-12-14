@@ -7,9 +7,18 @@ use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Role;
+use App\Models\Permission;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:roles.view')->only(['index', 'table', 'show']);
+        $this->middleware('permission:roles.create')->only(['create', 'store']);
+        $this->middleware('permission:roles.edit')->only(['edit', 'update', 'attachPermission', 'detachPermission']);
+        $this->middleware('permission:roles.delete')->only(['delete']);
+    }
+
     public function index()
     {
         return view('roles.index');
@@ -40,7 +49,10 @@ class RoleController extends Controller
 
     public function show(Role $role)
     {
-        return view('roles.show', compact('role'));
+        $role->load('permissions');
+        $availablePermissions = Permission::whereNotIn('id', $role->permissions->pluck('id'))->get();
+        
+        return view('roles.show', compact('role', 'availablePermissions'));
     }
 
     public function edit(Role $role)
@@ -61,6 +73,21 @@ class RoleController extends Controller
     public function delete(Role $role)
     {
         $role->delete();
+
+        return ok();
+    }
+
+    public function attachPermission(Role $role)
+    {
+        $role->givePermissionTo(request('permission_id'));
+
+        return redirect()->route('roles.show', $role->id)
+            ->with('success', 'Permission attached successfully');
+    }
+
+    public function detachPermission(Role $role, Permission $permission)
+    {
+        $role->revokePermissionTo($permission);
 
         return ok();
     }

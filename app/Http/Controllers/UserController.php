@@ -13,6 +13,14 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:users.view')->only(['index', 'table', 'show']);
+        $this->middleware('permission:users.create')->only(['create', 'store']);
+        $this->middleware('permission:users.edit')->only(['edit', 'update']);
+        $this->middleware('permission:users.delete')->only(['delete']);
+    }
+
     public function index()
     {
         return view('users.index');

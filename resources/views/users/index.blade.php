@@ -1,10 +1,12 @@
 @extends('layouts.app', ['title' => 'Users'])
 
 @section('actions')
+@can('users.create')
 <a class="btn btn-primary btn-sm" href="{{ route('users.create') }}">
     <i class="cil-user-plus"></i> 
     Add User
 </a>
+@endcan
 @endsection
 
 @section('content')
@@ -32,6 +34,10 @@
 @push('scripts')
 <script>
 $(document).ready(function () {
+    var canView = {{ auth()->user()->can('users.view') ? 'true' : 'false' }};
+    var canEdit = {{ auth()->user()->can('users.edit') ? 'true' : 'false' }};
+    var canDelete = {{ auth()->user()->can('users.delete') ? 'true' : 'false' }};
+
     var usersTable = $('#users').DataTable({
 		processing: true,
         serverSide: true,
@@ -44,13 +50,18 @@ $(document).ready(function () {
             { data: 'created_by', name: 'created_by'},
 			{
                 "render": function(data, type, row) {
-                    return `
-                        <div aria-label="tableActions">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ route('users.index') }}/` + row['id'] + `" title="View"><i class="cil-external-link"></i></a>
-                            <a class="btn btn-outline-info btn-sm" href="{{ route('users.index') }}/` + row['id'] + `/edit" title="Edit"><i class="cil-pen"></i></a>
-                            <a class="btn btn-outline-danger btn-sm btn-delete" href="#" data-id="` + row['id'] + `" title="Delete"><i class="cil-trash"></i></a>
-                        </div>
-                    `;
+                    var actions = '<div aria-label="tableActions">';
+                    if (canView) {
+                        actions += '<a class="btn btn-outline-primary btn-sm" href="{{ route('users.index') }}/' + row['id'] + '" title="View"><i class="cil-external-link"></i></a> ';
+                    }
+                    if (canEdit) {
+                        actions += '<a class="btn btn-outline-info btn-sm" href="{{ route('users.index') }}/' + row['id'] + '/edit" title="Edit"><i class="cil-pen"></i></a> ';
+                    }
+                    if (canDelete) {
+                        actions += '<a class="btn btn-outline-danger btn-sm btn-delete" href="#" data-id="' + row['id'] + '" title="Delete"><i class="cil-trash"></i></a>';
+                    }
+                    actions += '</div>';
+                    return actions;
                 }
             }
         ]

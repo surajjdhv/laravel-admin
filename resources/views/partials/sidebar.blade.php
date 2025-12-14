@@ -14,36 +14,36 @@
 				Dashboard
 			</a>
 		</li>
-		@if($loggedInUser->isAdmin())
-			<!-- <li class="nav-item">
-				<a class="nav-link" href="{{ route('users.index') }}">
-					<i class="nav-icon cil-group"></i>
-					Users
-				</a>
-			</li> -->
-			<li class="nav-item nav-group" id="nav-group-user-management" data-nav-group="user-management">
-				<a class="nav-link nav-group-toggle" href="#">
-					<i class="nav-icon cil-group"></i> User Management
-				</a>
-				<ul class="nav-group-items">
-					<li class="nav-item">
-						<a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-							Users
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
-							Roles
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ request()->routeIs('permissions.*') ? 'active' : '' }}" href="{{ route('permissions.index') }}">
-							Permissions
-						</a>
-					</li>
-				</ul>
-			</li>
-		@endif
+	@canany(['users.view', 'roles.view', 'permissions.view'])
+		<li class="nav-item nav-group" id="nav-group-user-management" data-nav-group="user-management">
+			<a class="nav-link nav-group-toggle" href="#">
+				<i class="nav-icon cil-group"></i> User Management
+			</a>
+			<ul class="nav-group-items">
+				@can('users.view')
+				<li class="nav-item">
+					<a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+						Users
+					</a>
+				</li>
+				@endcan
+				@can('roles.view')
+				<li class="nav-item">
+					<a class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+						Roles
+					</a>
+				</li>
+				@endcan
+				@can('permissions.view')
+				<li class="nav-item">
+					<a class="nav-link {{ request()->routeIs('permissions.*') ? 'active' : '' }}" href="{{ route('permissions.index') }}">
+						Permissions
+					</a>
+				</li>
+				@endcan
+			</ul>
+		</li>
+	@endcanany
 	</ul>
 	<button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
 </div>
