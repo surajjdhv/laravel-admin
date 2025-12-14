@@ -21,7 +21,7 @@
 					Users
 				</a>
 			</li> -->
-			<li class="nav-item nav-group show">
+			<li class="nav-item nav-group" id="nav-group-user-management" data-nav-group="user-management">
 				<a class="nav-link nav-group-toggle" href="#">
 					<i class="nav-icon cil-group"></i> User Management
 				</a>
@@ -47,3 +47,33 @@
 	</ul>
 	<button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	const navGroups = document.querySelectorAll('[data-nav-group]');
+	
+	navGroups.forEach(function(navGroup) {
+		const groupKey = 'nav-group-' + navGroup.dataset.navGroup;
+		const savedState = localStorage.getItem(groupKey);
+		
+		// Restore saved state or default to open
+		if (savedState === 'open' || savedState === null) {
+			navGroup.classList.add('show');
+		}
+		
+		// Use MutationObserver to detect when CoreUI toggles the class
+		const observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				if (mutation.attributeName === 'class') {
+					const isOpen = navGroup.classList.contains('show');
+					localStorage.setItem(groupKey, isOpen ? 'open' : 'closed');
+				}
+			});
+		});
+		
+		observer.observe(navGroup, { attributes: true });
+	});
+});
+</script>
+@endpush
