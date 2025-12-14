@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 
 Route::get('/', function () {
@@ -58,6 +59,26 @@ Route::middleware('auth')->group(function () {
 
         Route::group([
             'prefix' => '{role}'
+        ], function () {
+            Route::get('/', 'show')->name('show');
+            Route::get('edit', 'edit')->name('edit');
+            Route::post('update', 'update')->name('update');
+            Route::post('delete', 'delete')->name('delete');
+        });
+    });
+
+    Route::group([
+        'prefix' => 'permissions',
+        'as' => 'permissions.',
+        'controller' => PermissionController::class
+    ], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('table', 'table')->name('table');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+
+        Route::group([
+            'prefix' => '{permission}'
         ], function () {
             Route::get('/', 'show')->name('show');
             Route::get('edit', 'edit')->name('edit');
