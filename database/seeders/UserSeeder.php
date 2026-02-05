@@ -9,13 +9,14 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => 'admin@123',
-            'type' => User::TYPE_ADMIN,
-            'created_by' => 1,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin',
+                'password' => 'admin@123',
+                'created_by' => 1,
+            ]
+        );
 
         // User::factory()->count(99)->create();
     }

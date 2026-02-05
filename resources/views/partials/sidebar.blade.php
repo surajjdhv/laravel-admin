@@ -14,20 +14,38 @@
 				Dashboard
 			</a>
 		</li>
-		@if($loggedInUser->isAdmin())
+		@can('users.view')
 			<li class="nav-item">
 				<a class="nav-link" href="{{ route('users.index') }}">
 					<i class="nav-icon cil-group"></i>
 					Users
 				</a>
 			</li>
+		@endcan
+		@can('activity-logs.view')
 			<li class="nav-item">
 				<a class="nav-link" href="{{ route('activity-logs.index') }}">
 					<i class="nav-icon cil-list"></i>
 					Activity Logs
 				</a>
 			</li>
-		@endif
+		@endcan
+		@can('roles.view')
+			<li class="nav-item">
+				<a class="nav-link" href="{{ route('roles.index') }}">
+					<i class="nav-icon cil-shield-alt"></i>
+					Roles
+				</a>
+			</li>
+		@endcan
+		@can('permissions.view')
+			<li class="nav-item">
+				<a class="nav-link" href="{{ route('permissions.index') }}">
+					<i class="nav-icon cil-lock-locked"></i>
+					Permissions
+				</a>
+			</li>
+		@endcan
 	</ul>
 	<button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
 </div>

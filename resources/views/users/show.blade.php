@@ -12,8 +12,8 @@
                 <td>{{ $user->name }}</td>
             </tr>
             <tr>
-                <th>Type</th>
-                <td>{{ ucwords($user->type) }}</td>
+                <th>Roles</th>
+                <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
             </tr>
             <tr>
                 <th>Active</th>
