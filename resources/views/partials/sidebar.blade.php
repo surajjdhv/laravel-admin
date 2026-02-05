@@ -56,6 +56,14 @@
 				</a>
 			</li>
 		@endcan
+		@can('log-viewer.view')
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url(config('log-viewer.route_path', 'log-viewer')) }}">
+					<i class="nav-icon cil-file"></i>
+					Log Viewer
+				</a>
+			</li>
+		@endcan
 	</ul>
 	<button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
 </div>

@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Spatie\Activitylog\Models\Activity;
 use Tabuna\Breadcrumbs\Trail;
 
 Route::get('/', function () {
@@ -82,18 +81,20 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::get('activity-logs', function (Request $request) {
-        $activities = Activity::query()
-            ->with(['causer', 'subject'])
-            ->latest()
-            ->paginate(25);
-
-        return view('activity-logs.index', compact('activities'));
-    })
-        ->name('activity-logs.index')
-        ->middleware('permission:activity-logs.view')
-        ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')->push('Activity Logs', route('activity-logs.index'))
-        );
+    Route::group([
+        'prefix' => 'activity-logs',
+        'as' => 'activity-logs.',
+        'controller' => ActivityLogController::class,
+    ], function () {
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware('permission:activity-logs.view')
+            ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')->push('Activity Logs', route('activity-logs.index'))
+            );
+        Route::get('table', 'table')
+            ->name('table')
+            ->middleware('permission:activity-logs.view');
+    });
 
     Route::group([
         'prefix' => 'roles',

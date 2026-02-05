@@ -12,6 +12,7 @@ class PermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'log-viewer.view',
             'roles.view',
             'roles.create',
             'roles.update',
