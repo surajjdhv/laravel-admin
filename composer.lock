@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a994bcc6ca030a879e5f7343ad8aa523",
+    "content-hash": "57f80680f06a1b6a4b71b4399490a66a",
     "packages": [
         {
             "name": "brick/math",
@@ -5907,6 +5907,74 @@
                 }
             ],
             "time": "2026-01-01T22:13:48+00:00"
+        },
+        {
+            "name": "tabuna/breadcrumbs",
+            "version": "4.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tabuna/breadcrumbs.git",
+                "reference": "d3b21ea43c7c157fd279d684b1f591df9d25a78b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tabuna/breadcrumbs/zipball/d3b21ea43c7c157fd279d684b1f591df9d25a78b",
+                "reference": "d3b21ea43c7c157fd279d684b1f591df9d25a78b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "^10.0|^11.0|^12.0",
+                "laravel/serializable-closure": "^1.0|^2.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "phpunit/php-code-coverage": "^10.|^11.0|^12.0",
+                "phpunit/phpunit": "^10.5|^11.0|^12.0",
+                "vimeo/psalm": "^5.0|^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Breadcrumbs": "Tabuna\\Breadcrumbs\\Breadcrumbs"
+                    },
+                    "providers": [
+                        "Tabuna\\Breadcrumbs\\BreadcrumbsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Tabuna\\Breadcrumbs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexandr Chernyaev",
+                    "email": "bliz48rus@gmail.com"
+                },
+                {
+                    "name": "Dwight Watson",
+                    "email": "dwight@studentservices.com.au"
+                },
+                {
+                    "name": "Dave James Miller",
+                    "email": "dave@davejamesmiller.com"
+                }
+            ],
+            "description": "An easy way to add breadcrumbs to your Laravel app.",
+            "support": {
+                "issues": "https://github.com/tabuna/breadcrumbs/issues",
+                "source": "https://github.com/tabuna/breadcrumbs/tree/4.3.0"
+            },
+            "time": "2025-02-25T08:18:04+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
