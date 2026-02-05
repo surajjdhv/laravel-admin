@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Mail;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -21,24 +22,29 @@ class UserController extends Controller
 
     public function table(): JsonResponse
     {
-        $users = User::select('id', 'name', 'email', 'type', 'created_by')
-            ->with('createdBy', 'updatedBy');
+        $users = User::select('id', 'name', 'email', 'created_by')
+            ->with('createdBy', 'updatedBy', 'roles');
 
         return DataTables::of($users)
-            ->editColumn('type', function ($user) {
-                return ucwords($user->type);
-            })
             ->editColumn('created_by', function ($user) {
                 return $user->createdBy ? $user->createdBy->name : '';
+            })
+            ->addColumn('roles', function ($user) {
+                return $user->roles
+                    ->pluck('name')
+                    ->map(function ($role) {
+                        return ucwords(str_replace(['-', '_'], ' ', $role));
+                    })
+                    ->implode(', ');
             })
             ->toJson();
     }
 
     public function create(): \Illuminate\Contracts\View\View
     {
-        $userTypes = User::getEnums('type');
+        $roles = Role::query()->orderBy('name')->get();
 
-        return view('users.create', compact('userTypes'));
+        return view('users.create', compact('roles'));
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -56,11 +62,32 @@ class UserController extends Controller
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => $request->get('password'),
-            'type' => $request->get('type'),
             'is_active' => $request->get('is_active'),
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id,
         ]);
+
+        if ($request->user()->can('users.roles.assign')) {
+            $roleIds = $request->input('roles', []);
+            $roleNames = Role::query()
+                ->whereIn('id', $roleIds)
+                ->pluck('name')
+                ->all();
+
+            $user->syncRoles($roleNames);
+
+            if (! empty($roleNames)) {
+                activity()
+                    ->causedBy($request->user())
+                    ->performedOn($user)
+                    ->event('user_roles_assigned')
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'roles' => $user->getRoleNames()->all(),
+                    ])
+                    ->log('User roles assigned');
+            }
+        }
 
         if ($request->has('send-password')) {
             // Send email to the user with password
@@ -75,8 +102,8 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'type' => $user->type,
                 'is_active' => $user->is_active,
+                'roles' => $user->getRoleNames()->all(),
             ])
             ->log('User created');
 
@@ -86,27 +113,53 @@ class UserController extends Controller
 
     public function show(User $user): \Illuminate\Contracts\View\View
     {
-        $user = $user->load('createdBy', 'updatedBy');
+        $user = $user->load('createdBy', 'updatedBy', 'roles');
 
         return view('users.show', compact('user'));
     }
 
     public function edit(User $user): \Illuminate\Contracts\View\View
     {
-        $user = $user->load('createdBy', 'updatedBy');
-        $userTypes = User::getEnums('type');
+        $user = $user->load('createdBy', 'updatedBy', 'roles');
+        $roles = Role::query()->orderBy('name')->get();
 
-        return view('users.edit', compact('user', 'userTypes'));
+        return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(User $user, UpdateUserRequest $request): RedirectResponse
     {
+        $previousRoles = $user->getRoleNames()->all();
+
         $user->update([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'type' => $request->get('type'),
             'is_active' => $request->get('is_active'),
         ]);
+
+        if ($request->user()->can('users.roles.assign')) {
+            $roleIds = $request->input('roles', []);
+            $roleNames = Role::query()
+                ->whereIn('id', $roleIds)
+                ->pluck('name')
+                ->all();
+
+            $user->syncRoles($roleNames);
+
+            $currentRoles = $user->getRoleNames()->all();
+
+            if ($previousRoles !== $currentRoles) {
+                activity()
+                    ->causedBy($request->user())
+                    ->performedOn($user)
+                    ->event('user_roles_updated')
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'previous_roles' => $previousRoles,
+                        'roles' => $currentRoles,
+                    ])
+                    ->log('User roles updated');
+            }
+        }
 
         $changes = array_keys($user->getChanges());
 
@@ -117,6 +170,7 @@ class UserController extends Controller
             ->withProperties([
                 'user_id' => $user->id,
                 'changes' => $changes,
+                'roles' => $user->getRoleNames()->all(),
             ])
             ->log('User updated');
 

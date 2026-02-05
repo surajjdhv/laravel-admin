@@ -1,10 +1,12 @@
 @extends('layouts.app', ['title' => 'Users'])
 
 @section('actions')
-<a class="btn btn-primary btn-sm" href="{{ route('users.create') }}">
-    <i class="cil-user-plus"></i> 
-    Add User
-</a>
+@can('users.create')
+    <a class="btn btn-primary btn-sm" href="{{ route('users.create') }}">
+        <i class="cil-user-plus"></i>
+        Add User
+    </a>
+@endcan
 @endsection
 
 @section('content')
@@ -19,7 +21,7 @@
 					<th>ID</th>
 					<th>Name</th>
 					<th>Email</th>
-					<th>Type</th>
+					<th>Roles</th>
 					<th>Created By</th>
 					<th>Action</th>
 				</tr>
@@ -32,6 +34,10 @@
 @push('scripts')
 <script>
 $(document).ready(function () {
+    const canView = @json(auth()->user()->can('users.view'));
+    const canUpdate = @json(auth()->user()->can('users.update'));
+    const canDelete = @json(auth()->user()->can('users.delete'));
+
     var usersTable = $('#users').DataTable({
 		processing: true,
         serverSide: true,
@@ -40,23 +46,32 @@ $(document).ready(function () {
             { data: 'id', name: 'id'},
             { data: 'name', name: 'name'},
             { data: 'email', name: 'email'},
-            { data: 'type', name: 'type'},
+            { data: 'roles', name: 'roles', orderable: false, searchable: false },
             { data: 'created_by', name: 'created_by'},
 			{
                 "render": function(data, type, row) {
-                    return `
-                        <div aria-label="tableActions">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ route('users.index') }}/` + row['id'] + `" title="View"><i class="cil-external-link"></i></a>
-                            <a class="btn btn-outline-info btn-sm" href="{{ route('users.index') }}/` + row['id'] + `/edit" title="Edit"><i class="cil-pen"></i></a>
-                            <a class="btn btn-outline-danger btn-sm btn-delete" href="#" data-id="` + row['id'] + `" title="Delete"><i class="cil-trash"></i></a>
-                        </div>
-                    `;
+                    let actions = '';
+
+                    if (canView) {
+                        actions += `<a class="btn btn-outline-primary btn-sm" href="{{ route('users.index') }}/` + row['id'] + `" title="View"><i class="cil-external-link"></i></a>`;
+                    }
+
+                    if (canUpdate) {
+                        actions += `<a class="btn btn-outline-info btn-sm" href="{{ route('users.index') }}/` + row['id'] + `/edit" title="Edit"><i class="cil-pen"></i></a>`;
+                    }
+
+                    if (canDelete) {
+                        actions += `<a class="btn btn-outline-danger btn-sm btn-delete" href="#" data-id="` + row['id'] + `" title="Delete"><i class="cil-trash"></i></a>`;
+                    }
+
+                    return `<div class="d-flex gap-1" aria-label="tableActions">` + actions + `</div>`;
                 }
             }
         ]
 	});
 
-    $('#users').on('click', '.btn-delete', function (e) {
+    if (canDelete) {
+        $('#users').on('click', '.btn-delete', function (e) {
         swal({
             title: "Are you sure?",
             text: "This will delete the user!",
@@ -74,7 +89,8 @@ $(document).ready(function () {
                     });
             }
         });
-    });
+        });
+    }
 });
 </script>
 @endpush

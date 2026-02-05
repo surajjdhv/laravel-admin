@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
 {
@@ -31,15 +29,16 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'send-password' => ['nullable', 'in:1'],
             'password' => ['required_unless:send-password,1', Password::min(6)],
-            'type' => ['required', Rule::in(User::getEnums('type'))],
             'is_active' => ['required', 'in:0,1'],
+            'roles' => ['nullable', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
         ];
     }
 
     public function messages()
     {
         return [
-            'password.required_unless' => 'Password is required when not sending on email.'
+            'password.required_unless' => 'Password is required when not sending on email.',
         ];
     }
 }

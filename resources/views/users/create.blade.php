@@ -28,13 +28,17 @@
                     <td><input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email" required></td>
                 </tr>
                 <tr>
-                    <th>Type</th>
+                    <th>Roles</th>
                     <td>
-                        <select class="form-control select2" name="type" required>
-                            @foreach ($userTypes as $type)
-                                <option value="{{ $type }}" @if(old('type', 'sales') == $type) selected @endif>{{ ucwords($type) }}</option>
-                            @endforeach
-                        </select>
+                        @can('users.roles.assign')
+                            <select class="form-control select2" name="roles[]" multiple>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" @if(collect(old('roles', []))->contains($role->id)) selected @endif>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <span class="text-muted">You do not have permission to assign roles.</span>
+                        @endcan
                     </td>
                 </tr>
                 <tr>

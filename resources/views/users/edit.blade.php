@@ -29,13 +29,17 @@
                     <td><input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}"></td>
                 </tr>
                 <tr>
-                    <th>Type</th>
+                    <th>Roles</th>
                     <td>
-                        <select class="form-control select2" name="type">
-                            @foreach ($userTypes as $type)
-                                <option value="{{ $type }}" @if(old('type', $user->type) == $type) selected @endif>{{ ucwords($type) }}</option>
-                            @endforeach
-                        </select>
+                        @can('users.roles.assign')
+                            <select class="form-control select2" name="roles[]" multiple>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" @if(collect(old('roles', $user->roles->pluck('id')->all()))->contains($role->id)) selected @endif>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <span class="text-muted">{{ $user->roles->pluck('name')->implode(', ') }}</span>
+                        @endcan
                     </td>
                 </tr>
                 <tr>

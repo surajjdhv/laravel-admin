@@ -10,7 +10,9 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "opcodesio/log-viewer": "*",
         "spatie/laravel-activitylog": "^4.11",
+        "spatie/laravel-permission": "^6.24",
         "tabuna/breadcrumbs": "^4.3",
         "yajra/laravel-datatables-oracle": "^12.4"
     },

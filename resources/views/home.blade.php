@@ -3,7 +3,7 @@
 @section('content')
 <div class="tab-pane" role="tabpanel">
     <div class="card-group">
-        @if ($loggedInUser->isAdmin())
+        @if ($loggedInUser->can('users.view'))
             <div class="card">
                 <div class="card-body">
                     <div class="text-medium-emphasis text-end mb-4">
