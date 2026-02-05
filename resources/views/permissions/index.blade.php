@@ -30,19 +30,21 @@
                             <td>{{ $permission->name }}</td>
                             <td>{{ $permission->roles_count }}</td>
                             <td>
-                                @can('permissions.update')
-                                    <a class="btn btn-outline-info btn-sm" href="{{ route('permissions.edit', $permission) }}" title="Edit">
-                                        <i class="cil-pen"></i>
-                                    </a>
-                                @endcan
-                                @can('permissions.delete')
-                                    <form class="d-inline" method="POST" action="{{ route('permissions.delete', $permission) }}">
-                                        @csrf
-                                        <button class="btn btn-outline-danger btn-sm" type="submit" title="Delete">
-                                            <i class="cil-trash"></i>
-                                        </button>
-                                    </form>
-                                @endcan
+                                <div class="d-flex gap-1">
+                                    @can('permissions.update')
+                                        <a class="btn btn-outline-info btn-sm" href="{{ route('permissions.edit', $permission) }}" title="Edit">
+                                            <i class="cil-pen"></i>
+                                        </a>
+                                    @endcan
+                                    @can('permissions.delete')
+                                        <form class="d-inline" method="POST" action="{{ route('permissions.delete', $permission) }}">
+                                            @csrf
+                                            <button class="btn btn-outline-danger btn-sm" type="submit" title="Delete">
+                                                <i class="cil-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </td>
                         </tr>
                     @empty

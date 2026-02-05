@@ -64,7 +64,7 @@ $(document).ready(function () {
                         actions += `<a class="btn btn-outline-danger btn-sm btn-delete" href="#" data-id="` + row['id'] + `" title="Delete"><i class="cil-trash"></i></a>`;
                     }
 
-                    return `<div aria-label="tableActions">` + actions + `</div>`;
+                    return `<div class="d-flex gap-1" aria-label="tableActions">` + actions + `</div>`;
                 }
             }
         ]

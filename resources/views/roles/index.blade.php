@@ -32,19 +32,21 @@
                             <td>{{ $role->permissions_count }}</td>
                             <td>{{ $role->users_count }}</td>
                             <td>
-                                @can('roles.update')
-                                    <a class="btn btn-outline-info btn-sm" href="{{ route('roles.edit', $role) }}" title="Edit">
-                                        <i class="cil-pen"></i>
-                                    </a>
-                                @endcan
-                                @can('roles.delete')
-                                    <form class="d-inline" method="POST" action="{{ route('roles.delete', $role) }}">
-                                        @csrf
-                                        <button class="btn btn-outline-danger btn-sm" type="submit" title="Delete">
-                                            <i class="cil-trash"></i>
-                                        </button>
-                                    </form>
-                                @endcan
+                                <div class="d-flex gap-1">
+                                    @can('roles.update')
+                                        <a class="btn btn-outline-info btn-sm" href="{{ route('roles.edit', $role) }}" title="Edit">
+                                            <i class="cil-pen"></i>
+                                        </a>
+                                    @endcan
+                                    @can('roles.delete')
+                                        <form class="d-inline" method="POST" action="{{ route('roles.delete', $role) }}">
+                                            @csrf
+                                            <button class="btn btn-outline-danger btn-sm" type="submit" title="Delete">
+                                                <i class="cil-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </td>
                         </tr>
                     @empty

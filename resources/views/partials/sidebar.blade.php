@@ -14,35 +14,45 @@
 				Dashboard
 			</a>
 		</li>
-		@can('users.view')
-			<li class="nav-item">
-				<a class="nav-link" href="{{ route('users.index') }}">
-					<i class="nav-icon cil-group"></i>
-					Users
+		@canany(['users.view', 'roles.view', 'permissions.view'])
+			<li class="nav-group" aria-expanded="true">
+				<a class="nav-link nav-group-toggle" href="#">
+					<i class="nav-icon cil-people"></i>
+					User Management
 				</a>
+				<ul class="nav-group-items">
+					@can('users.view')
+						<li class="nav-item">
+							<a class="nav-link" href="{{ route('users.index') }}">
+								<span class="nav-icon"></span>
+								Users
+							</a>
+						</li>
+					@endcan
+					@can('roles.view')
+						<li class="nav-item">
+							<a class="nav-link" href="{{ route('roles.index') }}">
+								<span class="nav-icon"></span>
+								Roles
+							</a>
+						</li>
+					@endcan
+					@can('permissions.view')
+						<li class="nav-item">
+							<a class="nav-link" href="{{ route('permissions.index') }}">
+								<span class="nav-icon"></span>
+								Permissions
+							</a>
+						</li>
+					@endcan
+				</ul>
 			</li>
-		@endcan
+		@endcanany
 		@can('activity-logs.view')
 			<li class="nav-item">
 				<a class="nav-link" href="{{ route('activity-logs.index') }}">
 					<i class="nav-icon cil-list"></i>
 					Activity Logs
-				</a>
-			</li>
-		@endcan
-		@can('roles.view')
-			<li class="nav-item">
-				<a class="nav-link" href="{{ route('roles.index') }}">
-					<i class="nav-icon cil-shield-alt"></i>
-					Roles
-				</a>
-			</li>
-		@endcan
-		@can('permissions.view')
-			<li class="nav-item">
-				<a class="nav-link" href="{{ route('permissions.index') }}">
-					<i class="nav-icon cil-lock-locked"></i>
-					Permissions
 				</a>
 			</li>
 		@endcan

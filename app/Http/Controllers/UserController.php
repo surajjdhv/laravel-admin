@@ -75,6 +75,18 @@ class UserController extends Controller
                 ->all();
 
             $user->syncRoles($roleNames);
+
+            if (! empty($roleNames)) {
+                activity()
+                    ->causedBy($request->user())
+                    ->performedOn($user)
+                    ->event('user_roles_assigned')
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'roles' => $user->getRoleNames()->all(),
+                    ])
+                    ->log('User roles assigned');
+            }
         }
 
         if ($request->has('send-password')) {
@@ -116,6 +128,8 @@ class UserController extends Controller
 
     public function update(User $user, UpdateUserRequest $request): RedirectResponse
     {
+        $previousRoles = $user->getRoleNames()->all();
+
         $user->update([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
@@ -130,6 +144,21 @@ class UserController extends Controller
                 ->all();
 
             $user->syncRoles($roleNames);
+
+            $currentRoles = $user->getRoleNames()->all();
+
+            if ($previousRoles !== $currentRoles) {
+                activity()
+                    ->causedBy($request->user())
+                    ->performedOn($user)
+                    ->event('user_roles_updated')
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'previous_roles' => $previousRoles,
+                        'roles' => $currentRoles,
+                    ])
+                    ->log('User roles updated');
+            }
         }
 
         $changes = array_keys($user->getChanges());
