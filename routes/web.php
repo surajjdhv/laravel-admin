@@ -1,9 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Spatie\Activitylog\Models\Activity;
 use Tabuna\Breadcrumbs\Trail;
 
 Route::get('/', function () {
@@ -18,18 +20,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])
         ->name('home')
-        ->breadcrumbs(fn (Trail $trail) =>
-            $trail->push('Home', route('home'))
+        ->breadcrumbs(fn (Trail $trail) => $trail->push('Home', route('home'))
         );
 
     Route::group([
         'prefix' => 'profile',
-        'as' => 'profile.'
+        'as' => 'profile.',
     ], function () {
         Route::get('/', [ProfileController::class, 'index'])
             ->name('index')
-            ->breadcrumbs(fn (Trail $trail) =>
-                $trail->parent('home')->push('Profile', route('profile.index'))
+            ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')->push('Profile', route('profile.index'))
             );
         Route::post('storePassword', [ProfileController::class, 'storePassword'])->name('password');
     });
@@ -37,38 +37,50 @@ Route::middleware('auth')->group(function () {
     Route::group([
         'prefix' => 'users',
         'as' => 'users.',
-        'controller' => UserController::class
+        'controller' => UserController::class,
     ], function () {
         Route::get('/', 'index')
             ->name('index')
-            ->breadcrumbs(fn (Trail $trail) =>
-                $trail->parent('home')->push('Users', route('users.index'))
+            ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')->push('Users', route('users.index'))
             );
         Route::get('table', 'table')->name('table');
         Route::get('create', 'create')
             ->name('create')
-            ->breadcrumbs(fn (Trail $trail) =>
-                $trail->parent('users.index')->push('Create user', route('users.create'))
+            ->breadcrumbs(fn (Trail $trail) => $trail->parent('users.index')->push('Create user', route('users.create'))
             );
         Route::post('store', 'store')->name('store');
 
         Route::group([
-            'prefix' => '{user}'
+            'prefix' => '{user}',
         ], function () {
             Route::get('/', 'show')
                 ->name('show')
-                ->breadcrumbs(fn (Trail $trail, \App\Models\User $user) =>
-                    $trail->parent('users.index')->push($user->name, route('users.show', $user))
+                ->breadcrumbs(fn (Trail $trail, \App\Models\User $user) => $trail->parent('users.index')->push($user->name, route('users.show', $user))
                 );
 
             Route::get('edit', 'edit')
                 ->name('edit')
-                ->breadcrumbs(fn (Trail $trail, \App\Models\User $user) =>
-                    $trail->parent('users.show', $user)->push('Edit', route('users.edit', $user))
+                ->breadcrumbs(fn (Trail $trail, \App\Models\User $user) => $trail->parent('users.show', $user)->push('Edit', route('users.edit', $user))
                 );
 
             Route::post('update', 'update')->name('update');
             Route::post('delete', 'delete')->name('delete');
         });
     });
+
+    Route::get('activity-logs', function (Request $request) {
+        $user = $request->user();
+
+        abort_unless($user && $user->isAdmin(), 403);
+
+        $activities = Activity::query()
+            ->with(['causer', 'subject'])
+            ->latest()
+            ->paginate(25);
+
+        return view('activity-logs.index', compact('activities'));
+    })
+        ->name('activity-logs.index')
+        ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')->push('Activity Logs', route('activity-logs.index'))
+        );
 });

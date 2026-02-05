@@ -10,6 +10,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "spatie/laravel-activitylog": "^4.11",
         "tabuna/breadcrumbs": "^4.3",
         "yajra/laravel-datatables-oracle": "^12.4"
     },

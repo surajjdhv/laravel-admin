@@ -21,6 +21,12 @@
 					Users
 				</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ route('activity-logs.index') }}">
+					<i class="nav-icon cil-list"></i>
+					Activity Logs
+				</a>
+			</li>
 		@endif
 	</ul>
 	<button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
