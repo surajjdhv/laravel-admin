@@ -27,3 +27,8 @@ docker-compose.override.yml
 /.cache
 /.cursor-server
 /.vscode-server
+/.codex-config
+/.codex
+/.cursor
+AGENTS.md
+boost.json
